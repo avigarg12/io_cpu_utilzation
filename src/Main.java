@@ -27,16 +27,12 @@ public class Main {
                     log("server accepted connection");
 
                     OutputStream out = client.getOutputStream();
-                    int counter=0;
-                    for (int i = 1; i <= 50000000; i++) {
-//                        Thread.sleep(3000); // simulate slow production of data
-//                        out.write(("chunk-" + i + "\n").getBytes());
-//                        out.flush();
-                        counter++;
-//                        log("server sent chunk " + i);
+                    for (int i = 1; i <= 5; i++) {
+                        Thread.sleep(3000); // simulate slow production of data
+                        out.write(("chunk-" + i + "\n").getBytes());
+                        out.flush();
+                        log("server sent chunk " + i);
                     }
-                    out.write(("chunk-" + counter + "\n").getBytes());
-                    out.flush();
                 }
             } catch (Exception e) {
                 log("server error: " + e.getMessage());
@@ -57,23 +53,15 @@ public class Main {
                 long cpuBefore = currentThreadCpuTime();
 
                 log("client calling read()");
-//                int bytesRead = in.read(buffer); // blocks until server sends data
+                int bytesRead = in.read(buffer); // blocks until server sends data
 
-                int counter=0;
-                for (long j = 1; j <= 50000000000L; j++) {
-//                        Thread.sleep(3000); // simulate slow production of data
-//                        out.write(("chunk-" + i + "\n").getBytes());
-//                        out.flush();
-                    counter++;
-//                        log("server sent chunk " + i);
-                }
                 long wallAfter = System.nanoTime();
                 long cpuAfter = currentThreadCpuTime();
 
-                log("read returned bytesRead=" + counter
+                log("read returned bytesRead=" + bytesRead
                         + ", wall ns=" + (wallAfter - wallBefore)
                         + ", cpu ns=" + (cpuAfter - cpuBefore)
-                        );
+                        + ", data=" + new String(buffer, 0, bytesRead).trim());
             }
         }
 
